@@ -43,6 +43,11 @@ main {
     
 }
 
+.login-page {
+    background: url(./background4.jpg) center center no-repeat;
+    
+}
+
 .login-container {
     width: 400px;
     max-width: 400px;
@@ -230,7 +235,7 @@ header{
     display: flex;
     justify-content: center;
     align-items: center;
-    background: url("/src/dog-image.jpg");
+    background: url("/src/background2.jpg");
     background-position: center;
     background-size: cover;
 }
