@@ -1,3 +1,43 @@
+import mysql from 'mysql2';
+import dotenv from 'dotenv';
+
+dotenv.config()
+
+const pool = mysql.createPool({
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE
+}).promise()
+
+function isValidPhoneNumber(phoneNumber) {
+    const phoneRegex = /^[0-9]{10}$/; // Example: Validating US phone numbers
+    return phoneRegex.test(phoneNumber);
+}
+
+export async function createAccount(name, email, password, phoneNumber) {
+    if (!isValidPhoneNumber(phoneNumber)) {
+        throw new Error("Invalid phone number format");
+    }
+
+    try {
+        const hashedPassword = await bcrypt.hash(password, 10);
+        
+        await pool.query(`
+            INSERT INTO userAccount (Name, Password, Email, PhoneNumber)
+            VALUES (?, ?, ?, ?)
+        `, [name, hashedPassword, email, phoneNumber]);
+        
+        console.log("Account created for:", name);
+    } catch (error) {
+        console.error("Error creating account:", error);
+        throw error;
+    }
+}
+
+
+
+
 const password = document.getElementById("enterPassword");
 
 function setFormMessage(formElement, type, message) {
@@ -18,7 +58,7 @@ function clearInputError(inputElement) {
     inputElement.parentElement.querySelector(".form__input-error-message").textContent = "";
 }
 
-//setFormMessage(loginForm, "success", "You're logged in!");
+// setFormMessage(loginForm, "success", "You're logged in!");
 
 document.addEventListener("DOMContentLoaded", () =>{
     const loginForm = document.querySelector("#login");
@@ -43,7 +83,7 @@ document.addEventListener("DOMContentLoaded", () =>{
 
         // Perform AJAX/Fetch login here
 
-        setFormMessage(loginForm, "error", "Invalid username/password comnbination");
+        setFormMessage(loginForm, "error", "Invalid email/password comnbination");
     })
 
     document.querySelectorAll(".form__input").forEach(inputElement =>{
